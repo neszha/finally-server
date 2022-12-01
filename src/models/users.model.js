@@ -4,14 +4,14 @@ const schema = new Schema({
     name: {
         type: String, required: true,
     },
-    profile: {
+    picture: {
         type: String,
     },
     gender: {
         type: String,
         required: true,
-        enum: ['man', 'woman', 'other'],
-        default: 'other',
+        enum: ['man', 'woman', 'anonym'],
+        default: 'anonym',
     },
     description: {
         type: String,
