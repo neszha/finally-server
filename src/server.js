@@ -5,6 +5,7 @@ import express from 'express';
 import process from 'process';
 import { createServer } from 'http';
 import './database/index.js';
+import events from './events.js';
 import apiRoutes from './api/index.js';
 
 const ROOT = process.cwd();
@@ -26,5 +27,7 @@ app.use('/api', apiRoutes);
 const myIp = ip.address();
 const port = process.env.PORT || 8000;
 httpServer.listen(port, () => {
-    console.log(`[${process.pid}] Server starting and listening on ${myIp}:${port}`);
+    console.clear();
+    console.log(`Server starting and listening on ${myIp}:${port}`);
+    events.emit('server-ready');
 });

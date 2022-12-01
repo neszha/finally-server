@@ -1,7 +1,5 @@
-import participantController from './participant.controller.js';
+import usersController from './users.controller.js';
 
-export {
-    participantController,
-};
+export { usersController };
 
 export default 'Controllers';

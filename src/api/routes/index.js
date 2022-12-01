@@ -4,6 +4,7 @@ import { Router } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
+import { usersController } from '../controlles/index.js';
 
 /** Endpoint level: /api/ */
 const devMode = (process.env.NODE_ENV === 'development');
@@ -15,15 +16,12 @@ api.use(bodyParser.json());
 api.use(cookieParser());
 api.use(fileUpload());
 
+api.get('/', (req, res) => res.json({ msg: 'Api is ready!' }));
+
 /**
- * Menagers account resources.
+ * Users resources.
  */
-// api.get('/managers', authManager.asAdministrator, managerController.gets);
-// api.get('/managers/:id', authManager.asAdministrator, managerController.getById);
-// api.post('/managers', authManager.asAdministrator, managerController.create);
-// api.put('/managers/:id', authManager.asAdministrator, managerController.edit);
-// api.delete('/managers', authManager.asAdministrator, managerController.destroy);
-// api.delete('/managers/activity', authManager.asAdministrator, managerController.clearActivity);
+api.post('/users/register', usersController.register);
 
 /** Route 404 */
 api.use((req, res) => {

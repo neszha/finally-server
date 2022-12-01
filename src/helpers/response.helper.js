@@ -1,45 +1,49 @@
 export default {
 
-    errorQuery(res, err) {
-        if (err.name === 'ValidationError') {
-            const errors = Object.values(err.errors).map((val) => val.message);
-            return res.json({ success: false, msg: errors });
-        }
-        return res.json({ success: false, data: [] });
+    api: {
+
+        // Successful responses.
+        success(res, msg = null, data = null) {
+            res.statusCode = 200;
+            return res.json({ msg, data });
+        },
+
+        // Client error responses.
+        badRequest(res, msg = "Server can't process your request.") {
+            res.statusCode = 400;
+            return res.json({ msg });
+        },
+
+        unauthorized(res, logoutForce = true, msg = 'Unauthorized access.') {
+            res.statusCode = 401;
+            if (logoutForce) res.clearCookie('token');
+            return res.json({ msg });
+        },
+
+        forbidden(res, msg = "You do't have access rights to the resource.") {
+            res.statusCode = 403;
+            return res.json({ msg });
+        },
+
+        notFound(res, msg = 'The requested resource was not found.') {
+            res.statusCode = 404;
+            return res.json({ msg });
+        },
+
+        methodNotAllowed(res, msg = 'Operation not allowed.') {
+            res.statusCode = 505;
+            return res.json({ msg });
+        },
+
+        // Server error responses.
+        internalServerError(res, msg = 'Invalid process.') {
+            res.statusCode = 500;
+            return res.json({ msg });
+        },
     },
 
-    handdler(res, err, data, sendData = false, msg = 'success') {
-        if (err) return this.errorQuery(res, err);
-        if (sendData) return res.json({ success: true, data });
-        return res.json({ success: true, msg });
-    },
-
-    sendInvalidMessage(res, msg = 'Invalid response!') {
-        return res.json({ success: false, msg });
-    },
-
-    invalidReqParameters(res, msg = 'Parameter yang dikirim tidak valid!') {
-        return res.json({ success: false, msg });
-    },
-
-    invalidQueryData(res) {
-        return res.json({ success: false, msg: 'Data yang dikirim tidak dapat diperoses!' });
-    },
-
-    unauthorized(res, useStatus = true, logoutForce = false) {
-        if (useStatus) res.statusCode = 401;
-        if (logoutForce) res.clearCookie('token');
-        return res.json({ success: false, msg: 'Unauthorized access.' });
-    },
-
-    notAllowed(res) {
-        res.statusCode = 401;
-        return res.json({ success: false, msg: 'Akses ke dalam resource tidak diizikan.' });
-    },
-
-    operationNotAllowed(res) {
-        res.statusCode = 401;
-        return res.json({ success: false, msg: 'Operasi tidak diizinkan.' });
+    web: {
+        //
     },
 
 };
