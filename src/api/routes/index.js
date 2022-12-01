@@ -22,9 +22,15 @@ api.get('/', (req, res) => res.json({ msg: 'Api is ready!' }));
 /**
  * Auth resources.
  */
-api.get('/auth', authMiddleware.asUser, usersController.getSession);
 api.post('/auth/login', usersController.login);
 api.post('/auth/logout', usersController.logout);
+
+/**
+ * Me resources.
+ */
+api.get('/me', authMiddleware.asUser, usersController.getSession);
+api.post('/me/picture', authMiddleware.asUser, usersController.updatePicture);
+api.patch('/me/bio', authMiddleware.asUser, usersController.updateBio);
 
 /**
  * Users resources.

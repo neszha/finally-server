@@ -5,7 +5,7 @@ const schema = new Schema({
         type: String, required: true,
     },
     picture: {
-        type: String,
+        type: String, default: null,
     },
     gender: {
         type: String,

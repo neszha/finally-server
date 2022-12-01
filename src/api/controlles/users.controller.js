@@ -1,6 +1,8 @@
+import process from 'process';
 import { UserModel } from '../../models/index.js';
-import { responseHelper, jwtHelper } from '../../helpers/index.js';
+import { responseHelper, jwtHelper, fileHelper } from '../../helpers/index.js';
 
+const ROOT = process.cwd();
 // const { isObjectId } = validatorHelper;
 const { badRequest, success } = responseHelper.api;
 
@@ -27,12 +29,14 @@ export default {
         const usernameCount = await UserModel.count({ username: body.username });
         if (usernameCount) return badRequest(res, 'Username telah digunakan!');
 
-        // Generate post user.
+        // Generate and post user.
         const user = new UserModel(body);
-        await user.save();
-
-        // Send response.
-        return success(res, 'Pendaftaran berhasil!');
+        user.save().then(() => {
+            success(res, 'Pendaftaran berhasil!');
+        }).catch(() => {
+            badRequest(res);
+        });
+        return true;
     },
 
     async login(req, res) {
@@ -58,6 +62,33 @@ export default {
             .json({ msg: 'Login berhasil.' });
     },
 
+    async updatePicture(req, res) {
+        const { _id } = req.user;
+        const picture = (req.files) ? req.files.picture : null;
+        const dirPictures = `${ROOT}/storage/pictures/`;
+
+        // Remove picture.
+        if (!picture) {
+            if (req.user.picture) {
+                const oldPicturePath = dirPictures + req.user.picture;
+                fileHelper.destroy(oldPicturePath);
+            }
+            await UserModel.updateOne({ _id }, { picture: null }).exec();
+            return success(res, 'Foto profil terhapus!');
+        }
+
+        // Save picture data.
+        const fileName = `${_id.toString()}.png`;
+        const filePath = `${dirPictures}${fileName}`;
+        fileHelper.saveFile(filePath, picture.data);
+
+        // Save picture path.
+        await UserModel.updateOne({ _id }, { picture: fileName }).exec();
+
+        // Send response.
+        return success(res, 'Foto profil terupdate!');
+    },
+
     logout(req, res) {
         res.clearCookie('token').json({ msg: 'Logout berhasil.' });
     },
@@ -69,6 +100,20 @@ export default {
     /**
      * Method: PATCH
      */
+    async updateBio(req, res) {
+        const { _id } = req.user;
+        const { name, gender, description } = req.body;
+
+        // Validate body.
+        if (!name || !gender) return badRequest(res);
+
+        // Save body.
+        const postBody = { name, gender, description };
+        await UserModel.updateOne({ _id }, postBody).exec();
+
+        // Send response.
+        return res.json({ msg: 'Perubahan berhasil disimpan.' });
+    },
 
     /**
      * Method: DELETE
