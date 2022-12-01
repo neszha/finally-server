@@ -1,9 +1,5 @@
-import authManager from './authManager.middleware.js';
-import authParticipant from './authParticipant.middleware.js';
+import authMiddleware from './auth.middleware.js';
 
-export {
-    authManager,
-    authParticipant,
-};
+export { authMiddleware };
 
 export default 'Middlewares';

@@ -1,7 +1,7 @@
 import { UserModel } from '../../models/index.js';
-import { responseHelper, validatorHelper } from '../../helpers/index.js';
+import { responseHelper, jwtHelper } from '../../helpers/index.js';
 
-const { isObjectId } = validatorHelper;
+// const { isObjectId } = validatorHelper;
 const { badRequest, success } = responseHelper.api;
 
 export default {
@@ -9,6 +9,9 @@ export default {
     /**
      * Method: GET
      */
+    getSession(req, res) {
+        res.json({ data: req.user });
+    },
 
     /**
      * Method: POST
@@ -30,6 +33,33 @@ export default {
 
         // Send response.
         return success(res, 'Pendaftaran berhasil!');
+    },
+
+    async login(req, res) {
+        const { username, password } = req.body;
+
+        // Validate body.
+        if (!username || !password) return badRequest(res);
+
+        // Get and validate account.
+        const user = await UserModel.findOne({ username }, { name: 1, username: 1, password: 1 }).lean();
+        if (!user || user.password !== password) return badRequest(res, 'Username atau password tidak valid!');
+
+        // Generate token.
+        const payload = {
+            id: user._id.toString(),
+            name: user.name,
+            username: user.username,
+        };
+        const token = jwtHelper.sign(payload);
+
+        // Send response.
+        return res.cookie('token', token)
+            .json({ msg: 'Login berhasil.' });
+    },
+
+    logout(req, res) {
+        res.clearCookie('token').json({ msg: 'Logout berhasil.' });
     },
 
     /**

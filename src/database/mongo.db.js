@@ -11,7 +11,7 @@ mongoose.set('runValidators', true);
 events.on('server-ready', (options = {}) => {
     mongoose.connect(connection).then(() => {
         events.emit('mongodb-connected');
-        if (!options.quiet) console.log(`[${process.pid}] Connected to MongoDB Server.`);
+        if (!options.quiet) console.log('Connected to MongoDB Server.');
     }).catch((err) => {
         console.log(err);
         process.exit();
