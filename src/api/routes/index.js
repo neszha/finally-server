@@ -4,8 +4,8 @@ import { Router } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
-import { usersController } from '../controlles/index.js';
 import { authMiddleware } from '../middlewares/index.js';
+import { usersController, friendsController } from '../controlles/index.js';
 
 /** Endpoint level: /api/ */
 const devMode = (process.env.NODE_ENV === 'development');
@@ -24,6 +24,11 @@ api.get('/', (req, res) => res.json({ msg: 'Api is ready!' }));
  */
 api.post('/auth/login', usersController.login);
 api.delete('/auth/logout', usersController.logout);
+
+/**
+ * Friends resources.
+ */
+api.get('/friends', authMiddleware.asUser, friendsController.getFriendsByRadius);
 
 /**
  * Me resources.

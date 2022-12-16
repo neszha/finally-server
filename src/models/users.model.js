@@ -48,6 +48,9 @@ const schema = new Schema({
     isOnline: {
         type: Boolean, required: true, default: false,
     },
+    forTest: {
+        type: Boolean, default: false,
+    },
 }, {
     timestamps: true,
     versionKey: false,
