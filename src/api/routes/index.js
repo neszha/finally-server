@@ -31,6 +31,7 @@ api.delete('/auth/logout', usersController.logout);
 api.get('/me', authMiddleware.asUser, usersController.getSession);
 api.post('/me/picture', authMiddleware.asUser, usersController.updatePicture);
 api.patch('/me/bio', authMiddleware.asUser, usersController.updateBio);
+api.patch('/me/locations', authMiddleware.asUser, usersController.updateLocations);
 
 /**
  * Users resources.

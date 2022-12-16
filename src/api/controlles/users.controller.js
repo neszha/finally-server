@@ -128,6 +128,21 @@ export default {
         return res.json({ msg: 'Perubahan berhasil disimpan.' });
     },
 
+    async updateLocations(req, res) {
+        const { _id } = req.user;
+        const { coords } = req.body;
+
+        // Validate body.
+        if (!coords) return badRequest(res);
+
+        // Save new location.
+        const postBody = { locations: coords };
+        await UserModel.updateOne({ _id }, postBody).exec();
+
+        // Send response.
+        return res.json({ msg: 'Perubahan berhasil disimpan.' });
+    },
+
     /**
      * Method: DELETE
      */
