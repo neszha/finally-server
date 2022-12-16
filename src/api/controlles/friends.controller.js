@@ -1,5 +1,10 @@
 import geolib from 'geolib';
 import { UserModel } from '../../models/index.js';
+import { userService } from '../services/index.js';
+import { responseHelper, validatorHelper } from '../../helpers/index.js';
+
+const { isObjectId } = validatorHelper;
+const { badRequest, notFound } = responseHelper.api;
 
 export default {
 
@@ -8,8 +13,8 @@ export default {
      */
     async getFriendsByRadius(req, res) {
         const { _id } = req.user;
-        const myLocation = req.user.locations;
         const radius = Number(req.query.radius) || 1;
+        const myLocation = req.user.locations;
 
         // Get friends.
         const friends = await UserModel.find({ isOnline: true, $not: { _id } }, {
@@ -23,6 +28,7 @@ export default {
             ); // M
             friend.locations = { latitude, longitude };
             friend.distance = distance / 1000 || 0; // KM
+            friend.picture = userService.buildUserPicture(friend.picture);
         });
 
         // Filter friends base on radius.
@@ -33,6 +39,31 @@ export default {
 
         // Send respnse.
         return res.json({ radius, friends: friends2 });
+    },
+
+    async getFriendsById(req, res) {
+        const { userId } = req.params;
+        const myLocation = req.user.locations;
+
+        // Validate id.
+        if (!isObjectId(userId)) return badRequest(res);
+
+        // Get friend data.
+        const friend = await UserModel.findOne({ _id: userId }, { password: 0, forTest: 0 }).lean();
+        if (!friend) return notFound(res);
+        friend.picture = userService.buildUserPicture(friend.picture);
+        const { latitude, longitude } = friend.locations;
+        friend.locations = { latitude, longitude };
+
+        // Calculate distance.
+        const distance = geolib.getDistance(
+            { latitude: myLocation.latitude, longitude: myLocation.longitude },
+            { latitude, longitude },
+        ); // M
+        friend.distance = distance / 1000 || 0; // KM
+
+        // Send respnse.
+        return res.json({ data: friend });
     },
 
     /**

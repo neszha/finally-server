@@ -1,4 +1,4 @@
-import testService from './test.service.js';
+import userService from './user.service.js';
 
-export { testService };
+export { userService };
 export default 'Services';

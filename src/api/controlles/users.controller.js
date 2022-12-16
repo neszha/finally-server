@@ -1,10 +1,9 @@
-import fs from 'file-system';
 import process from 'process';
 import { UserModel } from '../../models/index.js';
+import { userService } from '../services/index.js';
 import { responseHelper, jwtHelper, fileHelper } from '../../helpers/index.js';
 
 const ROOT = process.cwd();
-const { BASE_URL } = process.env;
 // const { isObjectId } = validatorHelper;
 const { badRequest, success } = responseHelper.api;
 
@@ -17,16 +16,7 @@ export default {
         const userData = req.user;
 
         // FIlter profile piecute.
-        if (userData.picture) {
-            const fullPath = `${ROOT}/storage/pictures/${userData.picture}`;
-            if (fs.existsSync(fullPath)) {
-                // Generate picture URL.
-                const pictureUrl = `${BASE_URL}/pictures/${userData.picture}`;
-                userData.picture = pictureUrl;
-            } else {
-                userData.picture = null;
-            }
-        }
+        userData.picture = userService.buildUserPicture(userData.picture);
 
         // Send response.
         return res.json({ data: req.user });

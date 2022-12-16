@@ -29,6 +29,7 @@ api.delete('/auth/logout', usersController.logout);
  * Friends resources.
  */
 api.get('/friends', authMiddleware.asUser, friendsController.getFriendsByRadius);
+api.get('/friends/:userId', authMiddleware.asUser, friendsController.getFriendsById);
 
 /**
  * Me resources.
