@@ -89,10 +89,6 @@ export default {
         return success(res, 'Foto profil terupdate!');
     },
 
-    logout(req, res) {
-        res.clearCookie('token').json({ msg: 'Logout berhasil.' });
-    },
-
     /**
      * Method: PUT
      */
@@ -118,4 +114,7 @@ export default {
     /**
      * Method: DELETE
      */
+    logout(req, res) {
+        res.clearCookie('token').json({ msg: 'Logout berhasil.' });
+    },
 };

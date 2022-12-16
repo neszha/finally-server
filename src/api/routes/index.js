@@ -23,7 +23,7 @@ api.get('/', (req, res) => res.json({ msg: 'Api is ready!' }));
  * Auth resources.
  */
 api.post('/auth/login', usersController.login);
-api.post('/auth/logout', usersController.logout);
+api.delete('/auth/logout', usersController.logout);
 
 /**
  * Me resources.
