@@ -3,7 +3,7 @@ export default {
     api: {
 
         // Successful responses.
-        success(res, msg = null, data = null) {
+        success(res, msg = null, data = undefined) {
             res.statusCode = 200;
             return res.json({ msg, data });
         },

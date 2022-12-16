@@ -40,7 +40,7 @@ api.post('/users/register', usersController.register);
 /** Route 404 */
 api.use((req, res) => {
     res.statusCode = 404;
-    res.json({ success: false, msg: 'API tidak ditemukan!' });
+    res.json({ msg: 'API tidak ditemukan!' });
 });
 
 export default api;

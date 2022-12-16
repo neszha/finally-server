@@ -23,10 +23,25 @@ const schema = new Schema({
         type: String, required: true,
     },
     locations: {
-        x: {
+        accuracy: {
             type: Number, default: 0,
         },
-        y: {
+        altitude: {
+            type: Number, default: 0,
+        },
+        altitudeAccuracy: {
+            type: Number, default: 0,
+        },
+        heading: {
+            type: Number, default: 0,
+        },
+        latitude: {
+            type: Number, index: true, default: 0,
+        },
+        longitude: {
+            type: Number, index: true, default: 0,
+        },
+        speed: {
             type: Number, default: 0,
         },
     },
