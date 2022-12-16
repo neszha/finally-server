@@ -4,8 +4,8 @@ import { Router } from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
-import { usersController } from '../controlles/index.js';
 import { authMiddleware } from '../middlewares/index.js';
+import { usersController, friendsController } from '../controlles/index.js';
 
 /** Endpoint level: /api/ */
 const devMode = (process.env.NODE_ENV === 'development');
@@ -23,7 +23,12 @@ api.get('/', (req, res) => res.json({ msg: 'Api is ready!' }));
  * Auth resources.
  */
 api.post('/auth/login', usersController.login);
-api.post('/auth/logout', usersController.logout);
+api.delete('/auth/logout', usersController.logout);
+
+/**
+ * Friends resources.
+ */
+api.get('/friends', authMiddleware.asUser, friendsController.getFriendsByRadius);
 
 /**
  * Me resources.
@@ -31,6 +36,7 @@ api.post('/auth/logout', usersController.logout);
 api.get('/me', authMiddleware.asUser, usersController.getSession);
 api.post('/me/picture', authMiddleware.asUser, usersController.updatePicture);
 api.patch('/me/bio', authMiddleware.asUser, usersController.updateBio);
+api.patch('/me/locations', authMiddleware.asUser, usersController.updateLocations);
 
 /**
  * Users resources.
@@ -40,7 +46,7 @@ api.post('/users/register', usersController.register);
 /** Route 404 */
 api.use((req, res) => {
     res.statusCode = 404;
-    res.json({ success: false, msg: 'API tidak ditemukan!' });
+    res.json({ msg: 'API tidak ditemukan!' });
 });
 
 export default api;

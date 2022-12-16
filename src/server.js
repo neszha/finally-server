@@ -18,7 +18,7 @@ const httpServer = createServer(app);
 /** Middlewhare express in main level. */
 app.use(cors());
 app.use('/', express.static(`${ROOT}/dist`));
-app.use('/temp', express.static(`${ROOT}/storage/temp`));
+app.use('/pictures', express.static(`${ROOT}/storage/pictures`));
 
 /** Setup routes middlewhare express. */
 app.use('/api', apiRoutes);
