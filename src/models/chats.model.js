@@ -2,8 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 
 const contentSchema = new Schema({
     _id: { auto: false },
-    userIndex: {
-        type: Number, default: 0, min: 0,
+    userId: {
+        type: String, required: true,
     },
     content: {
         type: String, required: true,
