@@ -7,6 +7,7 @@ import events from '../events.js';
 dotenv.config();
 const connection = process.env.MONGO_CONNECTION;
 mongoose.set('runValidators', true);
+mongoose.set('strictQuery', true);
 
 events.on('server-ready', (options = {}) => {
     mongoose.connect(connection).then(() => {
