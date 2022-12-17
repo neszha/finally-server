@@ -4,6 +4,7 @@ dist
 _dist
 package-lock.json
 fake-package.json
+yarn.lock
 
 # Package building
 release.zip
