@@ -4,7 +4,6 @@ import { userService } from '../services/index.js';
 import { responseHelper, jwtHelper, fileHelper } from '../../helpers/index.js';
 
 const ROOT = process.cwd();
-// const { isObjectId } = validatorHelper;
 const { badRequest, success } = responseHelper.api;
 
 export default {
@@ -66,7 +65,7 @@ export default {
 
         // Send response.
         return res.cookie('token', token)
-            .json({ msg: 'Login berhasil.' });
+            .json({ msg: 'Login berhasil.', token });
     },
 
     async updatePicture(req, res) {
