@@ -3,13 +3,43 @@ import { UserModel, ChatModel } from '../../models/index.js';
 import { responseHelper, validatorHelper } from '../../helpers/index.js';
 
 const { isObjectId } = validatorHelper;
-const { badRequest, notFound } = responseHelper.api;
+const { badRequest, notFound, methodNotAllowed } = responseHelper.api;
 
 export default {
 
     /**
      * Method: GET
      */
+    async getChats(req, res) {
+        const { user } = req;
+        const { chatId } = user;
+        const { userId } = req.params;
+
+        // Validate id and body.
+        if (!isObjectId(userId)) return badRequest(res);
+
+        // Get chat data.
+        const chat = await ChatModel.findOne(
+            { _id: chatId, $or: [{ myId: userId }, { friendId: userId }] },
+            { message: 0, approved: 0 },
+        ).populate({
+            path: 'myId',
+            select: 'name username',
+        }).populate({
+            path: 'friendId',
+            select: 'name username',
+        }).lean();
+        if (!chat) return notFound(res);
+
+        // Rebuild chat data.
+        chat.users = {};
+        chat.users[chat.myId._id] = chat.myId;
+        chat.users[chat.friendId._id] = chat.friendId;
+        delete chat.myId; delete chat.friendId;
+
+        // Send response.
+        return res.json({ data: chat });
+    },
 
     /**
      * Method: POST
@@ -55,7 +85,7 @@ export default {
         if (!chat) return notFound(res);
 
         // Handdle accept status request.
-        const userIds = [user._id, chat.friendId];
+        const userIds = [user._id, chat.friendId, chat.myId];
         if (accept) {
             // Update apporved status.
             await ChatModel.updateOne({ _id: chatId }, { approved: true }).exec();
@@ -78,6 +108,33 @@ export default {
 
         // Send response.
         return res.json({ data: { accept } });
+    },
+
+    async sendChatText(req, res) {
+        const { user } = req;
+        const { userId } = req.params;
+        const { content } = req.body;
+
+        // Validate id and body.
+        if (!isObjectId(userId) || !content) return badRequest(res);
+
+        // Get chat data.
+        const { chatId } = user;
+        const chat = await ChatModel.findOne({ _id: chatId });
+        if (!chat) return methodNotAllowed(res);
+        const contentBody = {
+            userId: user._id.toString(),
+            content,
+            time: new Date().getTime(),
+        };
+        chat.contents.push(contentBody);
+        await chat.save();
+
+        // Send info via socker.
+        //
+
+        // Send response.
+        return res.json({ msg: 'success', content });
     },
 
     async endChat(req, res) {

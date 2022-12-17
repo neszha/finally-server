@@ -34,6 +34,8 @@ api.get('/friends/:userId', authMiddleware.asUser, friendsController.getFriendsB
 /**
  * Chats resources.
  */
+api.get('/friends/:userId/chats', authMiddleware.asUser, chatsController.getChats);
+api.post('/friends/:userId/chats', authMiddleware.asUser, chatsController.sendChatText);
 api.post('/friends/:userId/chats/request', authMiddleware.asUser, chatsController.requestToChat);
 api.delete('/friends/:userId/chats/:chatId', authMiddleware.asUser, chatsController.endChat);
 
