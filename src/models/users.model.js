@@ -14,7 +14,7 @@ const schema = new Schema({
         default: 'anonym',
     },
     description: {
-        type: String,
+        type: String, default: null,
     },
     username: {
         type: String, required: true, index: true, unique: true,
@@ -50,6 +50,9 @@ const schema = new Schema({
     },
     forTest: {
         type: Boolean, default: false,
+    },
+    chatId: {
+        type: Schema.Types.ObjectId, index: true, ref: 'chats', default: null,
     },
 }, {
     timestamps: true,

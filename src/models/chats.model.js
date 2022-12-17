@@ -31,9 +31,6 @@ const schema = new Schema({
     approved: {
         type: Boolean, required: true, default: false,
     },
-    end: {
-        type: Boolean, required: true, default: false,
-    },
     contents: [{ type: contentSchema }],
 }, {
     timestamps: true,

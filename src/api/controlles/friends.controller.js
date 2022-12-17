@@ -17,7 +17,8 @@ export default {
         const myLocation = req.user.locations;
 
         // Get friends.
-        const friends = await UserModel.find({ isOnline: true, $not: { _id } }, {
+        console.log(_id);
+        const friends = await UserModel.find({ isOnline: true, _id: { $ne: _id } }, {
             password: 0, createdAt: 0, updatedAt: 0, forTest: 0, isOnline: 0,
         }).lean();
         friends.forEach((friend) => {
