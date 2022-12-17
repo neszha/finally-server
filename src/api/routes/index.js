@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import { authMiddleware } from '../middlewares/index.js';
-import { usersController, friendsController } from '../controlles/index.js';
+import { usersController, friendsController, chatsController } from '../controlles/index.js';
 
 /** Endpoint level: /api/ */
 const devMode = (process.env.NODE_ENV === 'development');
@@ -30,6 +30,11 @@ api.delete('/auth/logout', usersController.logout);
  */
 api.get('/friends', authMiddleware.asUser, friendsController.getFriendsByRadius);
 api.get('/friends/:userId', authMiddleware.asUser, friendsController.getFriendsById);
+
+/**
+ * Chats resources.
+ */
+api.post('/friends/:userId/chats/request', authMiddleware.asUser, chatsController.requestToChat);
 
 /**
  * Me resources.
