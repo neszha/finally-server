@@ -35,12 +35,14 @@ api.get('/friends/:userId', authMiddleware.asUser, friendsController.getFriendsB
  * Chats resources.
  */
 api.post('/friends/:userId/chats/request', authMiddleware.asUser, chatsController.requestToChat);
+api.delete('/friends/:userId/chats/:chatId', authMiddleware.asUser, chatsController.endChat);
 
 /**
  * Me resources.
  */
 api.get('/me', authMiddleware.asUser, usersController.getSession);
 api.post('/me/picture', authMiddleware.asUser, usersController.updatePicture);
+api.post('/me/accept-request', authMiddleware.asUser, chatsController.acceptChatRequest);
 api.patch('/me/bio', authMiddleware.asUser, usersController.updateBio);
 api.patch('/me/locations', authMiddleware.asUser, usersController.updateLocations);
 

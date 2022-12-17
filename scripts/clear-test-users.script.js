@@ -9,7 +9,7 @@ events.emit('server-ready', { quiet: true });
 // Waiting mongodb connections.
 events.on('mongodb-connected', async () => {
     // Save test users.
-    await UserModel.deleteMany({ fortest: true }).exec();
+    await UserModel.deleteMany({ forTest: true }).exec();
 
     // Done.
     console.log('User test berhasil dihapus!');
