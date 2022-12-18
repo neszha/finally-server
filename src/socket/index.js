@@ -1,4 +1,5 @@
 import process from 'process';
+import { UserModel } from '../models/index.js';
 
 const devMode = (process.env.NODE_ENV === 'development');
 
@@ -6,19 +7,24 @@ const init = (io) => {
     // Register io to global io state.
     global.io = io;
 
-    // Socket.io middlewares.
-    // io.use(authMiddleware.generatePayload);
-
     // Watch client connection.
     io.on('connection', (socket) => {
         if (devMode) console.log(`==> ${socket.id}`);
 
-        // Register client connection to room.
-        // registerToRoom(socket);
+        // Set online user.
+        const { userId } = socket.handshake.auth;
+        if (userId) {
+            UserModel.updateOne({ _id: userId }, { isOnline: true }).exec();
+        }
 
         // Disconnecting client handdle.
         socket.on('disconnect', () => {
             if (devMode) console.log(`<== ${socket.id}`);
+
+            // Set offline user.
+            if (userId) {
+                UserModel.updateOne({ _id: userId }, { isOnline: false }).exec();
+            }
         });
     });
 };
