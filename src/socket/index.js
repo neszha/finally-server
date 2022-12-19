@@ -13,9 +13,10 @@ const init = (io) => {
 
         // Set online user.
         const { userId } = socket.handshake.auth;
-        if (userId) {
-            UserModel.updateOne({ _id: userId }, { isOnline: true }).exec();
-        }
+        if (userId) UserModel.updateOne({ _id: userId }, { isOnline: true }).exec();
+
+        // Register to room.
+        if (userId) socket.join('room:socket');
 
         // Disconnecting client handdle.
         socket.on('disconnect', () => {

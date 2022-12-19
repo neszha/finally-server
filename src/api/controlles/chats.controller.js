@@ -68,6 +68,11 @@ export default {
         await chat.save();
 
         // Send request data to friend via socket.
+        if (global.io) {
+            const emiterKey = `chat-request:${userId}`;
+            const data = { user, message };
+            global.io.to('room:socket').emit(emiterKey, data);
+        }
 
         // Send response.
         return res.json({ data: chat });
@@ -94,7 +99,11 @@ export default {
             await UserModel.updateMany({ _id: { $in: userIds } }, { chatId: chat._id }).exec();
 
             // Send accept info via socket.
-            //
+            if (global.io) {
+                const emiterKey = `accept-chat:${chatId}`;
+                const data = { accept };
+                global.io.to('room:socket').emit(emiterKey, data);
+            }
         } else {
             // End the chat session. (remove chat record)
             await ChatModel.deleteOne({ _id: chatId }).exec();
@@ -103,7 +112,11 @@ export default {
             await UserModel.updateMany({ _id: { $in: userIds } }, { chatId: null }).exec();
 
             // Send denial info via socket.
-            //
+            if (global.io) {
+                const emiterKey = `accept-chat:${chatId}`;
+                const data = { accept };
+                global.io.to('room:socket').emit(emiterKey, data);
+            }
         }
 
         // Send response.
